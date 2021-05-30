@@ -1,0 +1,53 @@
+---
+title: "Covid Visualization"
+author: "Rohini Khanal"
+date: "5/30/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Loading Packages
+```{r message=FALSE}
+library(tidyverse)
+library(dplyr)
+library(lubridate)
+theme_set(theme_minimal()) # To obtain much cleaner plot
+
+```
+
+#Loading Data
+```{r}
+l<-file.choose()
+c <- read.csv(l)
+view(c)
+covid <- c %>% filter (location== "Nepal")
+view(covid)
+covid$date<- ymd(covid$date)
+
+```
+
+#plotting Nepal
+```{r}
+ggplot(covid,aes(x=date,y=new_cases))+geom_line()+
+  labs(x="Dates",y="New Cases",title = "Daily New Cases in Nepal")+
+  scale_y_continuous(labels = scales::comma)+
+  theme_minimal()
+```
+
+#Plotting Nepal and India
+```{r}
+covid19 <- c %>% filter(location %in% c("Nepal","India"))
+covid19$date <- ymd(covid19$date)
+
+ggplot(covid19,aes(x=date,y=new_cases,color=location))+geom_line()+
+  facet_wrap(~location,ncol=1,scales="free_y")+
+  labs(x="Dates",y="New Cases",title = "Daily New Cases in Nepal and India")+
+  scale_y_continuous(labels = scales::comma)
+```
+
+
+
+
